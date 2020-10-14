@@ -1,0 +1,24 @@
+<div *ngIf="player" class="game">
+  <div class="player" [ngStyle]="{'left.px': player.x, 'top.px': player.y, 'background-color': player.color}">
+    <strong class="name">{{ player.username }}</strong>
+  </div>
+
+  <div *ngFor="let item of players" class="player" [ngStyle]="{'left.px': item.x, 'top.px': item.y, 'background-color': item.color}">
+    <span class="name">{{ item.username }}</span>
+  </div>
+</div>
+
+
+<p>
+  <button (click)="move('right')">Direita</button>
+  <button (click)="move('left')">Esquerda</button>
+  <button (click)="move('up')">Cima</button>
+  <button (click)="move('down')">Baixo</button>
+</p>
+
+<strong>Players conectados</strong>
+<ul>
+  <li><strong>{{ player | json }}</strong></li>
+  <li *ngFor="let item of players">{{ item | json }}</li>
+</ul>
+

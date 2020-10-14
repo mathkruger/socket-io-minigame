@@ -1,0 +1,19 @@
+.game {
+    position: relative;
+    border: 1px solid black;
+    width: 500px; 
+    height: 200px;
+}
+
+.player {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+}
+
+.player .name {
+    position: absolute;
+    top: -10px;
+    left: -5px;
+    font-size: 9px;
+}
