@@ -6,22 +6,20 @@
 }
 
 .player {
-    width: 20px;
-    height: 20px;
     position: absolute;
 }
 
 .player .name {
     position: absolute;
     top: -10px;
-    left: -5px;
-    font-size: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
 }
 
 .comida {
     position: absolute;
     width: 5px;
     height: 5px;
-    border-radius: 50%;
     background: black;
 }

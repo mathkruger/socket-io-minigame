@@ -1,10 +1,23 @@
 <ng-container *ngIf="player">
   <div class="game">
-    <div [id]="'id_' + player.username" class="player" [ngStyle]="{'left.px': player.x, 'top.px': player.y, 'background-color': player.color, 'z-index': 1}">
+    <div [id]="'id_' + player.username" class="player" [ngStyle]="{
+      'left.px': player.x,
+      'top.px': player.y,
+      'background-color': player.color,
+      'z-index': 1,
+      'width.px': player.radius * 2,
+      'height.px': player.radius * 2
+    }">
       <strong class="name">{{ player.username }}</strong>
     </div>
   
-    <div *ngFor="let item of players" class="player" [ngStyle]="{'left.px': item.x, 'top.px': item.y, 'background-color': item.color}">
+    <div *ngFor="let item of players" class="player" [ngStyle]="{
+      'left.px': item.x,
+      'top.px': item.y,
+      'background-color': item.color,
+      'width.px': item.radius * 2,
+      'height.px': item.radius * 2
+    }">
       <span class="name">{{ item.username }}</span>
     </div>
 

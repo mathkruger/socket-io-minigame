@@ -3,4 +3,5 @@ export class Player {
     y: number;
     username: string;
     color: string;
+    radius: number;
 }

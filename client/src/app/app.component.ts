@@ -23,27 +23,22 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.socket.on("position", position => {
       this.player = position;
-      this.player.color = "#000";
 
-      for(let i = 0; i < this.comidas.length; i++) {
-        let comida = this.comidas[i];
+      // checando se o player está colidindo com alguma comida
+      let comida = this.comidas.find(comida => {
+        return this.player.x < comida.x + 5 &&
+        this.player.x + this.player.radius > comida.x &&
+        this.player.y < comida.y + 5 &&
+        this.player.y + this.player.radius > comida.y;
+      });
 
-        if (this.player.x < comida.x + 5 &&
-          this.player.x + 20 > comida.x &&
-          this.player.y < comida.y + 5 &&
-          this.player.y + 20 > comida.y
-        ) {
-          this.comer(comida);
-          break;
-        }
+      if(comida) {
+        this.comer(comida);
       }
     });
 
     this.socket.on("update_players", players => {
       this.players = players.filter(x => x.username != this.player.username);
-      this.players.forEach(x => {
-        x.color = "#f00";
-      });
     });
 
     this.socket.on("update_foods", foods => {
@@ -59,7 +54,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.socket.emit('score_up', comida)
   }
 
-  @HostListener('document:keypress', ['$event'])
+  @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     let key = event.key.toUpperCase();
 

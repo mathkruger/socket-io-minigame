@@ -5,6 +5,8 @@ const Socketio = require("socket.io")(Http)
 var players = [];
 var comidas = [];
 
+const possibleColors = ['#c7429d', '#c74242', '#4258c7', '#42c74f', '#a842c7', '#e0db48'];
+
 var updatePlayers = (player, index) => {
     player.emit("position", players[index]);
     Socketio.emit("update_players", players);
@@ -26,7 +28,9 @@ Socketio.on("connection", socket => {
     players.push({
         x: 200,
         y: 200,
+        radius: 20,
         username: socket.username,
+        color: possibleColors[randomInt(0, possibleColors.length - 1)],
         score: 0
     });
     
@@ -41,6 +45,7 @@ Socketio.on("connection", socket => {
 
         if(indexComida >= 0) {
             players[indexPlayer].score += 10;
+            players[indexPlayer].radius += 5;
             comidas.splice(indexComida, 1);
         }
 
