@@ -1,13 +1,12 @@
-const { isObject } = require("util");
-
 const Express = require("express")()
 const Http = require("http").Server(Express)
 const Socketio = require("socket.io")(Http)
 
 var players = [];
+var comidas = [];
 
-var updatePlayers = (player) => {
-    player.emit("position", { username: player.username, x: player.x, y: player.y });
+var updatePlayers = (player, index) => {
+    player.emit("position", players[index]);
     Socketio.emit("update_players", players);
 }
 
@@ -22,50 +21,80 @@ function makeid(length) {
  }
 
 Socketio.on("connection", socket => {
-    socket.x = 200
-    socket.y = 200
     socket.username = makeid(6);
+
     players.push({
-        x: socket.x,
-        y: socket.y,
-        username: socket.username
+        x: 200,
+        y: 200,
+        username: socket.username,
+        score: 0
     });
     
-    updatePlayers(socket);
+    updatePlayers(socket, players.findIndex(x => x.username == socket.username));
+    gerarComida();
+
+    socket.on('score_up', data => {
+        var indexComida = comidas.findIndex(x => x.id == data.id);
+        var indexPlayer = players.findIndex(x => x.username == socket.username);
+
+        console.log('comida recebida', indexComida)
+
+        if(indexComida >= 0) {
+            players[indexPlayer].score += 10;
+            comidas.splice(indexComida, 1);
+        }
+
+        updatePlayers(socket, indexPlayer);
+        Socketio.emit("update_foods", comidas);
+    })
 
     socket.on('disconnect', data => {
-        players.splice(players.indexOf({ username: socket.username }), 1)
+        var index = players.findIndex(x => x.username == socket.username);
+        players.splice(index, 1)
         updatePlayers(socket)
 	});
 
     socket.on("move", data => {
-        let aux = players.findIndex(x => x.username == socket.username);
+        var index = players.findIndex(x => x.username == socket.username);
 
         switch(data) {
             case "left":
-                players[aux].x -= 5;
+                players[index].x -= 5;
                 socket.x -= 5;
             break;
 
             case "right":
-                players[aux].x += 5;
+                players[index].x += 5;
                 socket.x += 5;
             break;
 
             case "up":
-                players[aux].y -= 5;
+                players[index].y -= 5;
                 socket.y -= 5;
             break;
 
             case "down":
-                players[aux].y += 5;
+                players[index].y += 5;
                 socket.y += 5;
             break;
         }
 
-        updatePlayers(socket)
+        updatePlayers(socket, index)
     })
 })
+
+setInterval(() => {
+    gerarComida();
+}, 10000);
+
+function gerarComida() {
+    comidas.push({ x: randomInt(0, 500), y: randomInt(0, 500), id: makeid(20) });
+    Socketio.emit("update_foods", comidas);
+}
+
+function randomInt(min, max) {
+	return min + Math.floor((max - min) * Math.random());
+}
 
 Http.listen(1232, () => {
     console.log('ESCUTANDO NA PORTA :1232')

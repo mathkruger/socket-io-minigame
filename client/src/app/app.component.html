@@ -1,24 +1,31 @@
-<div *ngIf="player" class="game">
-  <div class="player" [ngStyle]="{'left.px': player.x, 'top.px': player.y, 'background-color': player.color}">
-    <strong class="name">{{ player.username }}</strong>
+<ng-container *ngIf="player">
+  <div class="game">
+    <div [id]="'id_' + player.username" class="player" [ngStyle]="{'left.px': player.x, 'top.px': player.y, 'background-color': player.color, 'z-index': 1}">
+      <strong class="name">{{ player.username }}</strong>
+    </div>
+  
+    <div *ngFor="let item of players" class="player" [ngStyle]="{'left.px': item.x, 'top.px': item.y, 'background-color': item.color}">
+      <span class="name">{{ item.username }}</span>
+    </div>
+
+    <div *ngFor="let comida of comidas" [id]="'id_' + comida.id" class="comida" [ngStyle]="{'left.px': comida.x, 'top.px': comida.y }"></div>
   </div>
+  
+  
+  <p>
+    <strong>Instruções</strong>: Coma as comidas <br/>
+    <strong>Controles</strong>: W A S D
+  </p>
+  
+  <strong>Players conectados</strong>
+  <ul>
+    <li><strong>{{ player.username }}</strong> - Pontuação: {{ player.score }}</li>
+    
+    <li *ngFor="let item of players">
+      {{ item.username }} - Pontuação: {{ item.score }}
+    </li>
+  </ul>
+</ng-container>
 
-  <div *ngFor="let item of players" class="player" [ngStyle]="{'left.px': item.x, 'top.px': item.y, 'background-color': item.color}">
-    <span class="name">{{ item.username }}</span>
-  </div>
-</div>
 
-
-<p>
-  <button (click)="move('right')">Direita</button>
-  <button (click)="move('left')">Esquerda</button>
-  <button (click)="move('up')">Cima</button>
-  <button (click)="move('down')">Baixo</button>
-</p>
-
-<strong>Players conectados</strong>
-<ul>
-  <li><strong>{{ player | json }}</strong></li>
-  <li *ngFor="let item of players">{{ item | json }}</li>
-</ul>
 
